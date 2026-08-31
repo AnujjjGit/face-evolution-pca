@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from PIL import Image
-from scipy.spatial.distance import squareform, pdist
+from scipy.spatial.distance import pdist, squareform
 from sklearn.decomposition import PCA
 from sklearn.metrics import mean_squared_error
 
@@ -137,13 +137,22 @@ def run(root: Path, output: Path, components: int, width: int, height: int) -> N
     embedding_frame.to_csv(output / "embeddings.csv", index=False)
 
     distances = squareform(pdist(embeddings, metric="euclidean"))
-    pd.DataFrame(distances, index=embedding_frame["image"], columns=embedding_frame["image"]).to_csv(
-        output / "distance_matrix.csv"
+    distance_frame = pd.DataFrame(
+        distances,
+        index=embedding_frame["image"],
+        columns=embedding_frame["image"],
     )
+    distance_frame.to_csv(output / "distance_matrix.csv")
 
     save_variance_curve(pca, output / "variance_curve.png")
     save_eigenfaces(pca, width, height, output / "eigenfaces.png")
-    save_reconstructions(matrix, reconstructed, width, height, output / "reconstruction_examples.png")
+    save_reconstructions(
+        matrix,
+        reconstructed,
+        width,
+        height,
+        output / "reconstruction_examples.png",
+    )
 
     print(f"images: {len(paths)}")
     print(f"pixel dimensions: {matrix.shape[1]}")
