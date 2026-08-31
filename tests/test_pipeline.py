@@ -26,4 +26,6 @@ def test_more_components_reduce_reconstruction_error() -> None:
     _, _, reconstructed_2 = fit_pca(matrix, components=2)
     _, _, reconstructed_8 = fit_pca(matrix, components=8)
 
-    assert reconstruction_mse(matrix, reconstructed_8) <= reconstruction_mse(matrix, reconstructed_2)
+    error_2 = reconstruction_mse(matrix, reconstructed_2)
+    error_8 = reconstruction_mse(matrix, reconstructed_8)
+    assert error_8 <= error_2
